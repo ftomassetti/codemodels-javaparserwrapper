@@ -1,8 +1,10 @@
-module Codemodels
+require 'codemodels'
+
+module CodeModels
 module Javaparserwrapper
 
 # A Parser built wrapping a base parser written in Java
-class ParserJavaWrapper < Parser
+class ParserJavaWrapper < CodeModels::Parser
 
 	attr_accessor :verbose
 
@@ -94,6 +96,7 @@ protected
 				capitalized_name = ref.name.proper_capitalize				
 				value.each do |el|
 					unless el.respond_to?(:parent)
+						el.class.__persistent__ = true
 						class << el
 							attr_accessor :parent						
 						end
