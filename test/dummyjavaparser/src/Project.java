@@ -20,4 +20,8 @@ public class Project {
     public List<Todo> getTodos(){
         return todos;
     }
+
+    public String getName(){
+        return this.name;
+    }
 }
