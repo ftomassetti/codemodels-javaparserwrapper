@@ -3,6 +3,34 @@ require 'codemodels'
 module CodeModels
 module Javaparserwrapper
 
+class TransformationFactory
+
+	def instantiate_transformed(original)
+		target_class = get_corresponding_class(original)
+		instance = target_class.new
+	end
+
+end
+
+# They look in a specified Module for a class with 
+# the same name as the class of the original object 
+class BasicTransformationFactory < TransformationFactory
+
+	def initialize(target_module)
+		@target_module = target_module
+	end
+
+	protected
+
+	def get_corresponding_class(original)
+		original_class = original.class
+		class_name = Utils.simple_java_class_name(original_class)
+		raise "No corresponding class '#{class_name}' found in #{@target_module}" unless @target_module.const_defined?(class_name)
+		@target_module.const_get(class_name)
+	end
+
+end
+
 # A Parser built wrapping a base parser written in Java
 class ParserJavaWrapper < CodeModels::Parser
 
@@ -34,7 +62,6 @@ protected
 
 	def reference_to_method(model_class,ref)
 		s = ref.name
-		#s = 'value' if s=='body'
 		adapted = adapter(model_class,ref)
 		s = adapted if adapted		
 		s.to_sym

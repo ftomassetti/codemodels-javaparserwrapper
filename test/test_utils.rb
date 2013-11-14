@@ -7,7 +7,7 @@ java_import 'it.codemodels.javaparserwrapper.ast.Todo'
 java_import 'it.codemodels.javaparserwrapper.ast.Comment'
 java_import 'it.codemodels.javaparserwrapper.DummyJavaParser'
 
-class TestParser < Test::Unit::TestCase
+class TestUtils < Test::Unit::TestCase
 
     include CodeModels::Javaparserwrapper
 
