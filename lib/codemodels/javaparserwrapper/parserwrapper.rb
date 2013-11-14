@@ -3,7 +3,7 @@ require 'codemodels'
 module CodeModels
 module Javaparserwrapper
 
-class TransformationFactory
+module TransformationFactory
 
 	def instantiate_transformed(original)
 		target_class = get_corresponding_class(original)
@@ -14,11 +14,10 @@ end
 
 # They look in a specified Module for a class with 
 # the same name as the class of the original object 
-class BasicTransformationFactory < TransformationFactory
+module BasicTransformationFactory
+	include TransformationFactory
 
-	def initialize(target_module)
-		@target_module = target_module
-	end
+	attr_accessor :target_module
 
 	protected
 
@@ -34,18 +33,26 @@ end
 # A Parser built wrapping a base parser written in Java
 class ParserJavaWrapper < CodeModels::Parser
 
+
+
+end
+
+class JavaObjectsToRgenTransformer
+
 	attr_accessor :verbose
 
 	def initialize
 		@verbose = false
 	end
 
-protected 
-
 	JavaCollection = ::Java::JavaClass.for_name("java.util.Collection")
 
 	def log(msg)
 		puts msg if verbose
+	end
+
+	def adapter_specific_class(model_class,ref)
+		nil
 	end
 	
 	def adapter(model_class,ref)
@@ -146,9 +153,9 @@ protected
 	end
 
 	def node_to_model(node)
-		log("node_to_model #{node.class}")
-		metaclass = get_corresponding_metaclass(node)
-		instance = metaclass.new
+		log("node_to_model #{node.class}")		
+		instance = instantiate_transformed(node)
+		metaclass = instance.class
 		metaclass.ecore.eAllAttributes.each do |attr|
 			populate_attr(node,attr,instance)
 		end
