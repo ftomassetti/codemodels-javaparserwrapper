@@ -3,6 +3,9 @@ require 'helper'
 $CLASSPATH << 'test/dummyjavaparser/classes'
 
 java_import 'it.codemodels.javaparserwrapper.ast.Project'
+java_import 'it.codemodels.javaparserwrapper.ast.Todo'
+java_import 'java.util.Date'
+java_import 'java.util.GregorianCalendar'
 
 class TestParser < Test::Unit::TestCase
 
@@ -19,11 +22,18 @@ class TestParser < Test::Unit::TestCase
         class A < RGen::MetamodelBuilder::MMBase
             has_attr 'x',Integer
             has_attr 'y',String
-        end       
+        end      
+
+        class Todo < RGen::MetamodelBuilder::MMBase
+            has_attr 'description',String
+            has_attr 'status',String
+        end
 
         class Project < RGen::MetamodelBuilder::MMBase
             has_attr 'name',String
-        end
+            contains_many_uni 'todos', Todo
+        end        
+
     end
 
     class MyJavaObjectsToRgenTransformer < JavaObjectsToRgenTransformer
@@ -40,6 +50,16 @@ class TestParser < Test::Unit::TestCase
         @original_a = Src::A.new
         @original_a.x = 1
         @original_a.y = '2'
+
+        d1 = GregorianCalendar.new
+
+        @fill_report = Todo.new('fill report')
+
+        @have_a_party = Todo.new('have a party!')
+        @have_a_party.status = Todo::Status::WORKING_ON
+
+        @poli.addTodo(@fill_report)
+        @poli.addTodo(@have_a_party)
     end
 
     class MyBasicTransformationFactory
@@ -62,5 +82,27 @@ class TestParser < Test::Unit::TestCase
         assert t.is_a?(Dest::Project)
         assert_equal 'Poli',t.name
     end
+
+    def test_node_to_model_enum_attr
+        j2rt = MyJavaObjectsToRgenTransformer.new
+
+        t = j2rt.node_to_model(@fill_report)
+        assert t.is_a?(Dest::Todo)
+        assert_equal 'fill report',t.description
+        assert_equal 'NOT_STARTED',t.status
+
+        t = j2rt.node_to_model(@have_a_party)
+        assert t.is_a?(Dest::Todo)
+        assert_equal 'have a party!',t.description
+        assert_equal 'WORKING_ON',t.status        
+    end
+
+    def test_node_to_model_containment
+        j2rt = MyJavaObjectsToRgenTransformer.new
+        t = j2rt.node_to_model(@poli)
+        assert_equal 2,@poli.todos.count
+        assert_equal 'fill report',@poli.todos[0].description
+        assert_equal 'have a party!',@poli.todos[1].description
+    end    
 
 end
