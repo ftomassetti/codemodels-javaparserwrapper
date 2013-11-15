@@ -3,23 +3,23 @@ module Javaparserwrapper
 
 class JavaBeanModel
 
-    def initialize(java_bean,adapters_map)
+    def initialize(java_bean,adapters_map={})
         @java_bean    = java_bean
         @adapters_map = adapters_map
     end
 
-    def get_value(property)
-        adapter = @adapters_map[property]       
+    def get_value(property_name)
+        adapter = @adapters_map[property_name]       
         if adapter
             adapter.call(@java_bean)
         else
-            get_property_value_through_getter(node,property.name)
+            get_property_value_through_getter(property_name)
         end     
     end
 
     private
 
-    def get_property_value_through_getter(node,prop_name)
+    def get_property_value_through_getter(prop_name)
         capitalized_name = prop_name.proper_capitalize
         methods = [:"get#{capitalized_name}",:"is#{capitalized_name}"]
 
@@ -34,6 +34,14 @@ class JavaBeanModel
         end
         raise "how should I get this... #{prop_name} on #{@java_bean.class}. It does not respond to #{methods}"
     end
+
+	def transform_enum_values(value)
+		if value.respond_to?(:java_class) && value.java_class.enum?
+			value.name
+		else
+			value
+		end
+	end    
 
 end
 
