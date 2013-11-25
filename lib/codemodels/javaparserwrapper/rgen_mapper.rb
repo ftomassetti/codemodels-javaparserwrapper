@@ -1,14 +1,55 @@
 module CodeModels
 module Javaparserwrapper
 
+# Given a java bean
+# - map to a RGen metaclass
+# - each feature is filled either using an adapter or a source model access
+# - things obtained through source model have to be converted to rgen objects 
+
 # This class map a source to a specific RGenMetaclass
 class RGenMetaclassMapper
+
+    def rgen_metaclass(java_class)
+    end
+
+end
+
+class ValueGetter
+end
+
+class RGenValueFiller
+
+    def fill(rgen_obj,property,value)
+        if property.many
+            set_multiple_value(rgen_obj,property,value)
+        else
+            set_single_value(rgen_obj,property,value)
+        end
+    end
+
+    private
+
+    def set_single_value(rgen_obj,property,value)
+        rgen_obj.send(:"#{property.name}=",value)
+    end
+
+    def set_multiple_value(rgen_obj,property,value)
+        capitalized_name = property.name.proper_capitalize              
+        value.each do |el|
+            model.send(:"add#{capitalized_name}",node_to_model(el))
+        end
+    end
+
 end
 
 # It builds RGen objects from some source
-class RGenMapper
+class RGenObjectMapper
 
-    def build(source)
+    def initialize(metaclass_mapper)
+        @metaclass_mapper = metaclass_mapper
+    end
+
+    def rgen_object(source)
         rgen_obj = instantiate(source)
         initialize_obj(rgen_obj,source)
         rgen_obj
@@ -17,6 +58,8 @@ class RGenMapper
     private
 
     def instantiate(source)
+        metaclass = @metaclass_mapper.rgen_metaclass(source.java_class)
+        metaclass.new
     end
 
     def initialize_obj(rgen_obj,source_model)
