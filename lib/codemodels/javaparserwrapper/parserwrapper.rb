@@ -14,7 +14,7 @@ end
 
 # They look in a specified Module for a class with 
 # the same name as the class of the original object 
-module BasicTransformationFactory
+class BasicTransformationFactory
 	include TransformationFactory
 
 	attr_accessor :target_module
@@ -22,6 +22,7 @@ module BasicTransformationFactory
 	protected
 
 	def get_corresponding_class(original)
+		raise "target_module not set" if @target_module.nil?
 		original_class = original.class
 		class_name = Utils.simple_java_class_name(original_class)
 		raise "No corresponding class '#{class_name}' found in #{@target_module}" unless @target_module.const_defined?(class_name)
@@ -33,7 +34,13 @@ end
 # A Parser built wrapping a base parser written in Java
 class ParserJavaWrapper < CodeModels::Parser
 
+	def initialize(transformer=JavaObjectsToRgenTransformer.new)
+		@transformer = transformer
+	end
 
+	def node_to_model(node)
+		@transformer.node_to_model(node)
+	end
 
 end
 
@@ -41,9 +48,12 @@ class JavaObjectsToRgenTransformer
 
 	attr_accessor :verbose
 
-	def initialize
+	def initialize(factory=BasicTransformationFactory.new)
 		@verbose = false
+		@factory = factory
 	end
+
+	attr_accessor :factory
 
 	JavaCollection = ::Java::JavaClass.for_name("java.util.Collection")
 
@@ -152,9 +162,13 @@ class JavaObjectsToRgenTransformer
 		end
 	end
 
+#	def instantiate_transformed(node)
+#		raise "Should include a TransformationFactory"
+#	end
+
 	def node_to_model(node)
-		log("node_to_model #{node.class}")		
-		instance = instantiate_transformed(node)
+		log("node_to_model #{node.class}")
+		instance = @factory.instantiate_transformed(node)
 		metaclass = instance.class
 		metaclass.ecore.eAllAttributes.each do |attr|
 			populate_attr(node,attr,instance)

@@ -37,10 +37,11 @@ class TestParser < Test::Unit::TestCase
     end
 
     class MyJavaObjectsToRgenTransformer < JavaObjectsToRgenTransformer
-        include CodeModels::Javaparserwrapper::BasicTransformationFactory
+#        include CodeModels::Javaparserwrapper::BasicTransformationFactory
 
         def initialize
-            self.target_module = TestParser::Dest
+            super
+            @factory.target_module = TestParser::Dest
         end
 
     end
@@ -62,8 +63,8 @@ class TestParser < Test::Unit::TestCase
         @poli.addTodo(@have_a_party)
     end
 
-    class MyBasicTransformationFactory
-        include CodeModels::Javaparserwrapper::BasicTransformationFactory
+    class MyBasicTransformationFactory < CodeModels::Javaparserwrapper::BasicTransformationFactory
+#        include CodeModels::Javaparserwrapper::BasicTransformationFactory
 
         def initialize
             self.target_module = TestParser::Dest
