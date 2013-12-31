@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["f.tomassetti@gmail.com"]
   spec.description   = %q{Code to wrap parsers written in Java and produce models suitable to be used in CodeModels}
   spec.summary       = %q{Code to wrap parsers written in Java and produce models suitable to be used in CodeModels}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/ftomassetti/codemodels-javaparserwrapper"
   spec.license       = "Apache v2"
 
   spec.files         = `git ls-files`.split($/)
