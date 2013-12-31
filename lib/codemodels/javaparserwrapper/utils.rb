@@ -1,5 +1,5 @@
 module CodeModels
-module Javaparserwrapper
+module JavaParserWrapper
 
 module Utils	
 

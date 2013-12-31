@@ -9,7 +9,7 @@ java_import 'it.codemodels.javaparserwrapper.DummyJavaParser'
 
 class TestUtils < Test::Unit::TestCase
 
-    include CodeModels::Javaparserwrapper
+    include CodeModels::JavaParserWrapper
 
     def setup
         @poli = Project.new('Poli')

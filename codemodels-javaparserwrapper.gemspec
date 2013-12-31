@@ -6,7 +6,7 @@ require 'codemodels/javaparserwrapper/version'
 Gem::Specification.new do |spec|
   spec.platform      = 'java'
   spec.name          = "codemodels-javaparserwrapper"
-  spec.version       = Codemodels::Javaparserwrapper::VERSION
+  spec.version       = CodeModels::JavaParserWrapper::VERSION
   spec.authors       = ["Federico Tomassetti"]
   spec.email         = ["f.tomassetti@gmail.com"]
   spec.description   = %q{Code to wrap parsers written in Java and produce models suitable to be used in CodeModels}

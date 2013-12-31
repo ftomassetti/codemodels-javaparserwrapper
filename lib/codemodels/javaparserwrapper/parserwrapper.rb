@@ -1,7 +1,10 @@
 require 'codemodels'
 
 module CodeModels
-module Javaparserwrapper
+module JavaParserWrapper
+
+# for compatibility, going to be removed in the future
+Javaparserwrapper = JavaParserWrapper
 
 module TransformationFactory
 

@@ -9,7 +9,7 @@ java_import 'java.util.GregorianCalendar'
 
 class TestParser < Test::Unit::TestCase
 
-    include CodeModels::Javaparserwrapper
+    include CodeModels::JavaParserWrapper
 
     module Src
         class A
@@ -63,7 +63,7 @@ class TestParser < Test::Unit::TestCase
         @poli.addTodo(@have_a_party)
     end
 
-    class MyBasicTransformationFactory < CodeModels::Javaparserwrapper::BasicTransformationFactory
+    class MyBasicTransformationFactory < CodeModels::JavaParserWrapper::BasicTransformationFactory
 #        include CodeModels::Javaparserwrapper::BasicTransformationFactory
 
         def initialize

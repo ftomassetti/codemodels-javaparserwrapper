@@ -1,5 +1,5 @@
-module Codemodels
-  module Javaparserwrapper
+module CodeModels
+  module JavaParserWrapper
     VERSION = "0.0.1"
   end
 end
