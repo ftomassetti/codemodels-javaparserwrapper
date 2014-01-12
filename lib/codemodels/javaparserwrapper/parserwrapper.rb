@@ -38,6 +38,7 @@ end
 class ParserJavaWrapper < CodeModels::Parser
 
 	def initialize(transformer=JavaObjectsToRgenTransformer.new)
+		super
 		@transformer = transformer
 	end
 
