@@ -37,8 +37,8 @@ end
 # A Parser built wrapping a base parser written in Java
 class ParserJavaWrapper < CodeModels::Parser
 
-	def initialize(transformer=JavaObjectsToRgenTransformer.new)
-		super
+	def initialize(transformer=JavaObjectsToRgenTransformer.new,internal_encoding=DEFAULT_INTERNAL_ENCODING)
+		super(internal_encoding)
 		@transformer = transformer
 	end
 
